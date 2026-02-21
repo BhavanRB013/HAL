@@ -1,0 +1,256 @@
+[I🔥 Level 1 – Timer as a Pure Time Base (Update Event Mastery)
+Task 1: 1ms Heartbeat Using General Timer (NOT SysTick)
+
+Do not use SysTick. Disable HAL time base if needed.
+
+Configure a general-purpose timer (like TIM2 or TIM3) to generate an update interrupt every 1 ms.
+
+Inside the ISR:
+
+Increment a volatile uint32_t ms_counter.
+
+In main():
+
+Every 1000 ms, toggle an LED.
+
+Every 5000 ms, print something via UART (but NOT inside ISR).
+
+What this forces you to understand:
+
+Prescaler calculation
+
+ARR calculation
+
+Update interrupt enable
+
+Clearing UIF flag
+
+Why volatile matters
+
+Keeping ISR short
+
+Software time tracking
+
+If your LED drifts → your math is wrong.
+
+🔥 Level 2 – PWM Deep Understanding
+Task 2: LED Brightness Ramp (ARR vs CCR Separation)
+
+Use PWM mode on a timer channel connected to an LED.
+
+Keep:
+
+ARR fixed (so frequency constant, e.g., 1 kHz).
+
+Gradually change CCR from 0 → ARR → 0.
+
+Create a smooth breathing LED effect.
+
+Rules:
+
+Change CCR inside main loop.
+
+Do NOT stop/restart the timer.
+
+Do NOT reinitialize the timer.
+
+This forces:
+
+Understanding that ARR controls frequency.
+
+CCR controls duty.
+
+PWM is hardware-driven.
+
+Timer runs independently of CPU.
+
+If LED flickers → frequency too low.
+If brightness jumps → you misunderstand duty cycle scaling.
+
+🔥 Level 3 – Multi-Channel PWM Synchronization
+Task 3: 3 LEDs, 1 Timer, Different Duty Cycles
+
+Use one timer.
+Enable 3 channels.
+Use same ARR.
+
+Set:
+
+CH1 = 25%
+
+CH2 = 50%
+
+CH3 = 75%
+
+Observe:
+
+All LEDs share same frequency.
+
+Only duty differs.
+
+Then change ARR dynamically.
+Watch what happens to brightness and frequency.
+
+This cements:
+
+Single counter, multiple CCR registers.
+
+Frequency is shared across channels.
+
+🔥 Level 4 – Input Capture Frequency Measurement
+Task 4: Measure Your Own PWM
+
+Connect:
+PWM output pin → jumper wire → input capture pin.
+
+Use one timer for PWM.
+Use another timer in input capture mode.
+
+Measure frequency of your own PWM signal.
+
+Steps:
+
+Capture two rising edges.
+
+Compute difference.
+
+Convert to Hz.
+
+Then:
+
+Change PWM frequency.
+
+Verify measured frequency changes accordingly.
+
+This forces:
+
+Edge selection
+
+Reading CCR values
+
+Period calculation
+
+Clock understanding
+
+If measurement unstable → noise or overflow not handled.
+
+🔥 Level 5 – Pulse Width Measurement
+Task 5: Duty Cycle Analyzer
+
+Using same loopback setup.
+
+Capture:
+
+Rising edge timestamp
+
+Falling edge timestamp
+
+Compute:
+
+High time
+
+Period
+
+Duty cycle %
+
+Display via UART.
+
+Now change CCR of PWM and verify measured duty matches expected.
+
+If mismatch → overflow handling wrong or edge config wrong.
+
+🔥 Level 6 – Overflow Handling Stress Test
+Task 6: Slow Signal, Small Timer
+
+Configure:
+
+Timer at high speed
+
+ARR small (force frequent overflow)
+
+Measure a slow PWM signal so overflow occurs between edges.
+
+Implement overflow compensation logic.
+
+If your measured frequency suddenly becomes negative or garbage → overflow math is wrong.
+
+This one separates theory readers from embedded engineers.
+
+🔥 Level 7 – SysTick vs General Timer Conflict
+Task 7: Break HAL_Delay On Purpose
+
+Change SysTick frequency manually.
+
+Observe HAL_Delay behaving incorrectly.
+
+Then move HAL time base to TIM6.
+
+Verify HAL_Delay works again.
+
+This teaches:
+
+SysTick is HAL backbone.
+
+Time base override concept.
+
+Why RTOS conflicts happen.
+
+🔥 Level 8 – ISR Discipline Challenge
+Task 8: Intentionally Break System
+
+Inside timer ISR:
+
+Add printf.
+
+Add HAL_Delay(10).
+
+Watch system freeze or behave strangely.
+
+Then remove them.
+Observe stability return.
+
+You will never again misuse ISR.
+
+🔥 Level 9 – Real-World Signal Measurement
+Task 9: Measure External Signal
+
+Use:
+
+Function generator OR
+
+Another microcontroller OR
+
+Servo control signal OR
+
+IR sensor output
+
+Measure real signal frequency and duty.
+
+Now you’re no longer testing your own generated signal.
+You’re measuring unpredictable real-world edges.
+
+This exposes noise, filtering, and edge detection realities.
+
+🔥 Level 10 – Timer-Based Cooperative Scheduler
+
+Final boss.
+
+Using only:
+
+One general timer update interrupt at 1 ms
+
+Build:
+
+Task A runs every 10 ms
+
+Task B runs every 100 ms
+
+Task C runs every 1000 ms
+
+No RTOS.
+No blocking delays.
+
+Pure software scheduling using timer tick.
+
+If you can do this cleanly,
+you fully understand update events, ISR rules, and time base architecture.
