@@ -1,0 +1,62 @@
+.data
+.bss
+.text
+.rodata
+These are memory sections created during compilation and linking.
+
+When you compile a C program: It does NOT become just “one block of code”. It is divided into sections.
+The linker arranges those sections into Flash and RAM based on a linker script.
+
+.text section
+this contains:
+1. Your program instructions
+2. functions
+3. isr
+Stored in Flash (because code should not change).
+
+.rodata section
+Read-only data
+const char name[] = "Enma";
+Stored in Flash.
+
+.data section
+Global or static variables that are initialized with a value.
+int x = 10;
+static int y = 20;
+At runtime, .data lives in RAM.
+But the initial values (10, 20) are stored in Flash.
+So at startup: Boot code copies .data from Flash → RAM.
+Because RAM is where variables must live (they are writable).
+
+.bss section
+BSS = Block Started by Symbol
+Global or static variables that are NOT initialized.
+int z;
+static int k;
+Since C guarantees uninitialized globals = 0,
+The startup code:
+    Allocates RAM space
+    Clears it to zero
+Nothing is stored in Flash for .bss.
+
+Where Does Stack and Heap Live?
+Stack → RAM
+Heap → RAM
+
+Flash:
+.text
+.rodata
+.data (initial values)
+
+RAM:
+.data (runtime copy)
+.bss
+heap
+stack
+
+Local variables inside functions:
+void func() {
+    int x = 5;
+}
+Do NOT go into .data or .bss.
+They go into stack.
