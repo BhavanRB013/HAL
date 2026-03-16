@@ -1,0 +1,34 @@
+[I🔥 Level 1 – Timer as a Pure Time Base (Update Event Mastery)
+Task 1: 1ms Heartbeat Using General Timer (NOT SysTick)
+
+Do not use SysTick. Disable HAL time base if needed.
+
+Configure a general-purpose timer (like TIM2 or TIM3) to generate an update interrupt every 1 ms.
+
+Inside the ISR:
+
+Increment a volatile uint32_t ms_counter.
+
+In main():
+
+Every 1000 ms, toggle an LED.
+
+Every 5000 ms, print something via UART (but NOT inside ISR).
+
+What this forces you to understand:
+
+Prescaler calculation
+
+ARR calculation
+
+Update interrupt enable
+
+Clearing UIF flag
+
+Why volatile matters
+
+Keeping ISR short
+
+Software time tracking
+
+If your LED drifts → your math is wrong.
