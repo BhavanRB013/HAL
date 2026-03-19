@@ -1,0 +1,33 @@
+🔥 Level 2 – PWM Deep Understanding
+Task 2: LED Brightness Ramp (ARR vs CCR Separation)
+
+Use PWM mode on a timer channel connected to an LED.
+
+Keep:
+
+ARR fixed (so frequency constant, e.g., 1 kHz).
+
+Gradually change CCR from 0 → ARR → 0.
+
+Create a smooth breathing LED effect.
+
+Rules:
+
+Change CCR inside main loop.
+
+Do NOT stop/restart the timer.
+
+Do NOT reinitialize the timer.
+
+This forces:
+
+Understanding that ARR controls frequency.
+
+CCR controls duty.
+
+PWM is hardware-driven.
+
+Timer runs independently of CPU.
+
+If LED flickers → frequency too low.
+If brightness jumps → you misunderstand duty cycle scaling.
